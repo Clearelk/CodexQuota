@@ -1,0 +1,200 @@
+<Window x:Class="CodexQuota.Desktop.Views.DetailsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{DynamicResource Text.DetailsTitle}"
+        Width="{StaticResource PanelWidth}"
+        SizeToContent="Manual"
+        MaxHeight="720"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="{x:Null}"
+        Topmost="True"
+        ShowInTaskbar="False"
+        ResizeMode="NoResize"
+        WindowStartupLocation="Manual"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        ShowActivated="False"
+        FontFamily="Microsoft YaHei UI, Segoe UI"
+        AutomationProperties.Name="{DynamicResource Text.DetailsAccessible}">
+  <Border x:Name="PanelRoot"
+          Style="{StaticResource WidgetRoot}"
+          CornerRadius="14"
+          Focusable="True"
+          KeyboardNavigation.IsTabStop="False"
+          FocusVisualStyle="{x:Null}"
+          MouseEnter="OnPanelMouseEnter"
+          MouseLeave="OnPanelMouseLeave">
+    <ScrollViewer x:Name="PanelScroll" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
+      <StackPanel x:Name="PanelContent" Margin="16,14,16,14">
+        <Grid Margin="0,0,0,14" ToolTip="{Binding PlanText}">
+          <TextBlock Text="{DynamicResource Text.QuotaTitle}" Style="{StaticResource TitleText}"
+                     FontSize="20" FontWeight="Bold" VerticalAlignment="Center" />
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="SettingsGear" Style="{StaticResource CloseButton}"
+                    Width="28" Height="28" Margin="0,0,6,0"
+                    ToolTip="{DynamicResource Text.OpenSettings}" AutomationProperties.Name="{DynamicResource Text.OpenSettings}" Click="OnSettingsClick">
+              <Path Data="{StaticResource SettingsIcon}" Style="{StaticResource OutlineIcon}" Width="18" Height="18" />
+            </Button>
+            <Button x:Name="CloseButton" Style="{StaticResource CloseButton}"
+                    Width="28" Height="28" ToolTip="{DynamicResource Text.CloseDetails}"
+                    AutomationProperties.Name="{DynamicResource Text.CloseDetails}" Click="OnCloseClick">
+              <Path Data="{StaticResource CloseIcon}" Style="{StaticResource OutlineIcon}" Width="17" Height="17" />
+            </Button>
+          </StackPanel>
+        </Grid>
+
+        <ItemsControl ItemsSource="{Binding PeriodCards}" Visibility="{Binding ShowPeriodCards, Converter={StaticResource BoolToVisibility}}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Style="{StaticResource CardBorder}" CornerRadius="9" Margin="0,0,0,10" Padding="12,10">
+                <StackPanel>
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="*" />
+                      <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding HeaderText}" Style="{StaticResource CardTitleText}"
+                               TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,8,0" />
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Visibility="{Binding DataContext.ShowRemaining, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BoolToVisibility}}">
+                      <TextBlock Text="{DynamicResource Text.Remaining}" Style="{StaticResource SecondaryText}" FontSize="13"
+                                 VerticalAlignment="Center" Margin="0,0,6,0" />
+                      <TextBlock Text="{Binding RemainingValueText}" Style="{StaticResource CardValueText}"
+                                 FontSize="22" Foreground="{Binding ValueAccent}" VerticalAlignment="Center" />
+                    </StackPanel>
+                  </Grid>
+                  <ProgressBar Style="{StaticResource RemainingBar}" Margin="0,9,0,0"
+                               Visibility="{Binding DataContext.ShowRemaining, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BoolToVisibility}}"
+                               HorizontalAlignment="Stretch"
+                               Value="{Binding RemainingPercent, Mode=OneWay}"
+                               Foreground="{Binding Accent}" Background="{Binding Track}" />
+                  <Grid Margin="0,8,0,0">
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="Auto" />
+                      <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding UsedText}" Style="{StaticResource SecondaryText}" FontSize="11.5"
+                               Visibility="{Binding DataContext.ShowRemaining, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BoolToVisibility}}"
+                               VerticalAlignment="Center" Margin="0,0,8,0" />
+                    <TextBlock Grid.Column="1" Text="{Binding ResetText}" Style="{StaticResource SecondaryText}"
+                               Visibility="{Binding DataContext.ShowResetTime, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BoolToVisibility}}"
+                               FontSize="11.5" TextAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" />
+                  </Grid>
+                </StackPanel>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <TextBlock Text="{Binding NoPeriodsText}">
+          <TextBlock.Style>
+            <Style TargetType="TextBlock" BasedOn="{StaticResource SecondaryText}">
+              <Setter Property="Visibility" Value="Collapsed" />
+              <Setter Property="Margin" Value="0,0,0,10" />
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding HasPeriodCards}" Value="False">
+                  <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+                <MultiDataTrigger>
+                  <MultiDataTrigger.Conditions><Condition Binding="{Binding ShowRemaining}" Value="False" /><Condition Binding="{Binding ShowResetTime}" Value="False" /></MultiDataTrigger.Conditions>
+                  <Setter Property="Visibility" Value="Collapsed" />
+                </MultiDataTrigger>
+              </Style.Triggers>
+            </Style>
+          </TextBlock.Style>
+        </TextBlock>
+
+        <StackPanel Visibility="{Binding ShowAuxiliaryRows, Converter={StaticResource BoolToVisibility}}" Margin="0,0,0,10">
+          <TextBlock Text="{DynamicResource Text.AuxiliaryTitle}" Style="{StaticResource SectionLabel}" />
+          <ItemsControl ItemsSource="{Binding AuxiliaryRows}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <DockPanel Margin="0,0,0,4">
+                  <TextBlock Text="{Binding RemainingText}" Style="{StaticResource SecondaryText}" DockPanel.Dock="Right" />
+                  <TextBlock Text="{Binding Label}" Style="{StaticResource SecondaryText}" />
+                </DockPanel>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+
+        <Border x:Name="DailyCard" Style="{StaticResource CardBorder}" CornerRadius="9" Padding="12,10" Visibility="{Binding ShowTodayUsage, Converter={StaticResource BoolToVisibility}}">
+          <StackPanel>
+            <DockPanel>
+              <Border Style="{StaticResource BadgeBorder}" DockPanel.Dock="Right" Padding="7,3">
+                <TextBlock Text="{Binding LocalBadgeText}" Style="{StaticResource BadgeText}" FontSize="11" />
+              </Border>
+              <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="{DynamicResource Text.LocalTitleShort}" Style="{StaticResource CardTitleText}" FontSize="13.5" />
+                <TextBlock Text="{DynamicResource Text.LocalSubtitle}" Style="{StaticResource SecondaryText}" FontSize="12" VerticalAlignment="Center" />
+                <Border Background="Transparent" Margin="5,0,8,0" Padding="1"
+                        ToolTip="{Binding DailyInfoText}" ToolTipService.InitialShowDelay="200"
+                        AutomationProperties.Name="{DynamicResource Text.DailyInfoAccessible}">
+                  <Path Data="{StaticResource InfoIcon}" Style="{StaticResource OutlineIcon}" Width="13" Height="13" />
+                </Border>
+              </StackPanel>
+            </DockPanel>
+
+            <Viewbox Margin="0,8,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"
+                     Stretch="Uniform" StretchDirection="DownOnly">
+              <StackPanel Orientation="Horizontal">
+                <TextBlock x:Name="DailySessionValue" Foreground="{DynamicResource TextPrimaryBrush}"
+                           TextWrapping="NoWrap" VerticalAlignment="Center" ToolTip="{Binding LocalInfoText}">
+                  <Run Text="{Binding LocalSessionsNumber, Mode=OneWay}" FontSize="24" FontWeight="SemiBold" /><Run Text="{Binding LocalSessionsSuffix, Mode=OneWay}" FontSize="13" />
+                </TextBlock>
+                <TextBlock Text="/" Style="{StaticResource SecondaryText}" FontSize="16"
+                           TextWrapping="NoWrap" VerticalAlignment="Center" Margin="10,0,10,0" />
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" ToolTip="{Binding ObservedInfoText}">
+                  <TextBlock Text="{DynamicResource Text.Consumption}" Style="{StaticResource BodyText}" FontSize="13" Margin="0,0,6,0"
+                             TextWrapping="NoWrap" VerticalAlignment="Center" />
+                  <TextBlock x:Name="DailyEstimateValue" Text="{Binding PrimaryConsumptionText}"
+                             TextWrapping="NoWrap" VerticalAlignment="Center" AutomationProperties.Name="{DynamicResource Text.ConsumptionAccessible}">
+                    <TextBlock.Style>
+                      <Style TargetType="TextBlock">
+                        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+                        <Setter Property="FontSize" Value="21" />
+                        <Setter Property="FontWeight" Value="SemiBold" />
+                        <Style.Triggers>
+                          <DataTrigger Binding="{Binding ObservedHasNumber}" Value="False">
+                            <Setter Property="FontSize" Value="13" />
+                            <Setter Property="FontWeight" Value="Normal" />
+                            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+                          </DataTrigger>
+                        </Style.Triggers>
+                      </Style>
+                    </TextBlock.Style>
+                  </TextBlock>
+                </StackPanel>
+              </StackPanel>
+            </Viewbox>
+            <TextBlock Text="{Binding DailyNoteText}" Style="{StaticResource SecondaryText}" Margin="0,5,0,0"
+                       Visibility="{Binding HasDailyNote, Converter={StaticResource BoolToVisibility}}" />
+          </StackPanel>
+        </Border>
+
+        <StackPanel Margin="12,12,0,0" ToolTip="{Binding NextFetchText}">
+          <StackPanel Orientation="Horizontal">
+            <Ellipse Width="10" Height="10" Fill="{Binding ConnectionDotBrush}" VerticalAlignment="Center" Margin="0,0,10,0" />
+            <TextBlock Text="{Binding StatusText}" Style="{StaticResource BodyText}" FontSize="13" VerticalAlignment="Center" />
+          </StackPanel>
+          <TextBlock Text="{Binding StatusDetailText}" Style="{StaticResource SecondaryText}" Margin="20,3,0,0"
+                     Visibility="{Binding HasStatusDetail, Converter={StaticResource BoolToVisibility}}" />
+          <StackPanel Orientation="Horizontal" Margin="-2,8,0,0">
+            <Path Data="{StaticResource ClockIcon}" Style="{StaticResource OutlineIcon}" Margin="0,0,8,0" />
+            <TextBlock Text="{Binding LastSuccessText}" Style="{StaticResource SecondaryText}" FontSize="13" VerticalAlignment="Center" />
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" Margin="-2,8,0,0">
+            <Path Data="{StaticResource RefreshIcon}" Style="{StaticResource OutlineIcon}" Margin="0,0,8,0" />
+            <TextBlock Text="{Binding LastAttemptText}" Style="{StaticResource SecondaryText}" FontSize="13" VerticalAlignment="Center" />
+          </StackPanel>
+        </StackPanel>
+
+        <Border Style="{StaticResource SeparatorLine}" Margin="0,12,0,9" />
+        <Grid x:Name="DetailsHint" Margin="10,0,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="22" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+          <Path Data="{StaticResource HintIcon}" Style="{StaticResource OutlineIcon}" Width="13" Height="15" Margin="0,0,9,0" />
+          <TextBlock Grid.Column="1" TextWrapping="Wrap" Text="{Binding HintText}" Style="{StaticResource SecondaryText}" FontSize="11.5" VerticalAlignment="Center" />
+        </Grid>
+      </StackPanel>
+    </ScrollViewer>
+  </Border>
+</Window>

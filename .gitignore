@@ -1,0 +1,27 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+artifacts/
+*.exe
+
+# Local developer / IDE
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+*.userprefs
+
+# Test results
+[Tt]est[Rr]esults/
+*.trx
+*.coverage
+coverage*.xml
+
+# Temporary verification scratch
+.verification-tmp/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini

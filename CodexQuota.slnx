@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/CodexQuota.Core/CodexQuota.Core.csproj" />
+    <Project Path="src/CodexQuota.Desktop/CodexQuota.Desktop.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/CodexQuota.FakeServer/CodexQuota.FakeServer.csproj" />
+    <Project Path="tests/CodexQuota.Tests/CodexQuota.Tests.csproj" />
+  </Folder>
+</Solution>

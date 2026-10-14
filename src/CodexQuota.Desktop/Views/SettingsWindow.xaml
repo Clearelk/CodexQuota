@@ -1,0 +1,184 @@
+<Window x:Class="CodexQuota.Desktop.Views.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:CodexQuota.Desktop.Views"
+        Title="{DynamicResource Text.Settings}"
+        Width="{DynamicResource PanelWidth}" Height="{DynamicResource SettingsPanelHeight}"
+        SizeToContent="Manual" MaxHeight="720"
+        WindowStyle="None" AllowsTransparency="True" Background="{x:Null}"
+        Topmost="True" ShowInTaskbar="False" ResizeMode="NoResize"
+        WindowStartupLocation="Manual" UseLayoutRounding="True" SnapsToDevicePixels="True"
+        FontFamily="Microsoft YaHei UI, Segoe UI"
+        AutomationProperties.Name="{DynamicResource Text.Settings}">
+  <Window.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries><ResourceDictionary Source="../Resources/Settings.xaml" /></ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Window.Resources>
+  <Border Style="{StaticResource WidgetRoot}" CornerRadius="12">
+    <Grid x:Name="SettingsSurface" Margin="12,12,12,10" Focusable="True" KeyboardNavigation.IsTabStop="False">
+      <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+      <Grid Height="32" Margin="3,0,0,10">
+        <StackPanel Orientation="Horizontal">
+          <Path Data="{StaticResource SettingsIcon}" Style="{StaticResource OutlineIcon}" Width="22" Height="22" Margin="0,0,11,0" />
+          <TextBlock Text="{DynamicResource Text.Settings}" Style="{StaticResource TitleText}" FontSize="20" FontWeight="Bold" VerticalAlignment="Center" />
+        </StackPanel>
+        <Button x:Name="SettingsCloseAction" Style="{StaticResource CloseButton}" Width="28" Height="28" HorizontalAlignment="Right" VerticalAlignment="Top"
+                ToolTip="{DynamicResource Text.CloseSettings}" AutomationProperties.Name="{DynamicResource Text.CloseSettings}" Click="OnCloseClick">
+          <Path Data="{StaticResource CloseIcon}" Style="{StaticResource OutlineIcon}" Width="17" Height="17" />
+        </Button>
+      </Grid>
+      <ScrollViewer x:Name="SettingsBody" Grid.Row="1" Style="{StaticResource SettingsScrollViewer}" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel>
+          <GroupBox Header="{DynamicResource Text.Basic}" Style="{StaticResource SettingsCard}">
+            <GroupBox.HeaderTemplate><DataTemplate><StackPanel Orientation="Horizontal" VerticalAlignment="Center"><Path Data="{StaticResource SettingsIcon}" Style="{StaticResource SettingsRowIcon}" Stroke="{DynamicResource AccentBrush}" /><TextBlock Text="{Binding}" VerticalAlignment="Center" /></StackPanel></DataTemplate></GroupBox.HeaderTemplate>
+            <StackPanel>
+              <Grid Style="{StaticResource SettingsRow}">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="26" /><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                <Path Data="{StaticResource SettingsPowerIcon}" Style="{StaticResource SettingsRowIcon}" />
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,3,8,3">
+                  <TextBlock Text="{DynamicResource Text.Startup}" Style="{StaticResource SettingsRowTitle}" />
+                  <TextBlock Text="{DynamicResource Text.StartupDescription}" Style="{StaticResource SettingsDescription}" />
+                </StackPanel>
+                <CheckBox x:Name="StartAtLoginBox" Grid.Column="2" Style="{StaticResource SettingsToggle}" IsChecked="{Binding StartAtLogin, Mode=TwoWay}" ToolTip="{Binding StartupStatusText}" AutomationProperties.Name="{DynamicResource Text.Startup}" />
+              </Grid>
+              <Border Style="{StaticResource SettingsDivider}" />
+              <Grid Style="{StaticResource SettingsRow}">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="26" /><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                <Path Data="{StaticResource SettingsPaletteIcon}" Style="{StaticResource SettingsRowIcon}" />
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,3,8,3">
+                  <TextBlock Text="{DynamicResource Text.Theme}" Style="{StaticResource SettingsRowTitle}" />
+                  <TextBlock Text="{DynamicResource Text.ThemeDescription}" Style="{StaticResource SettingsDescription}" />
+                </StackPanel>
+                <ComboBox x:Name="ThemeCombo" Grid.Column="2" Style="{StaticResource SettingsSelector}" ItemsSource="{Binding ThemeOptions}" SelectedItem="{Binding SelectedTheme, Mode=TwoWay}" AutomationProperties.Name="{DynamicResource Text.Theme}">
+                  <ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding Label}" /></DataTemplate></ComboBox.ItemTemplate>
+                </ComboBox>
+              </Grid>
+              <Border Style="{StaticResource SettingsDivider}" />
+              <Grid Style="{StaticResource SettingsRow}">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="26" /><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                <Path Data="{StaticResource SettingsGlobeIcon}" Style="{StaticResource SettingsRowIcon}" />
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,3,8,3">
+                  <TextBlock Text="{DynamicResource Text.Language}" Style="{StaticResource SettingsRowTitle}" />
+                  <TextBlock Text="{DynamicResource Text.LanguageDescription}" Style="{StaticResource SettingsDescription}" />
+                </StackPanel>
+                <ComboBox x:Name="LanguageCombo" Grid.Column="2" Style="{StaticResource SettingsSelector}" ItemsSource="{Binding LanguageOptions}" SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}" AutomationProperties.Name="{DynamicResource Text.Language}">
+                  <ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding Label}" /></DataTemplate></ComboBox.ItemTemplate>
+                </ComboBox>
+              </Grid>
+            </StackPanel>
+          </GroupBox>
+          <GroupBox Header="{DynamicResource Text.FloatingBall}" Style="{StaticResource SettingsCard}">
+            <GroupBox.HeaderTemplate><DataTemplate><StackPanel Orientation="Horizontal" VerticalAlignment="Center"><Grid Width="17" Height="17" Margin="0,0,9,0" VerticalAlignment="Center"><Path Data="{StaticResource SettingsBallIcon}" Style="{StaticResource OutlineIcon}" Width="17" Height="17" Stroke="{DynamicResource AccentBrush}" /><Ellipse Fill="{DynamicResource AccentBrush}" Width="7" Height="7" /></Grid><TextBlock Text="{Binding}" VerticalAlignment="Center" /></StackPanel></DataTemplate></GroupBox.HeaderTemplate>
+            <StackPanel>
+              <Grid Style="{StaticResource SettingsRow}">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                <StackPanel VerticalAlignment="Center" Margin="0,3,8,3"><TextBlock Text="{DynamicResource Text.Position}" Style="{StaticResource SettingsRowTitle}" /><TextBlock Text="{DynamicResource Text.PositionDescription}" Style="{StaticResource SettingsDescription}" /></StackPanel>
+                <ComboBox x:Name="PositionCombo" Grid.Column="1" Style="{StaticResource SettingsSelector}" ItemsSource="{Binding PlacementOptions}" SelectedItem="{Binding SelectedPlacement, Mode=TwoWay}" AutomationProperties.Name="{DynamicResource Text.BallPosition}">
+                  <ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding Label}" /></DataTemplate></ComboBox.ItemTemplate>
+                </ComboBox>
+              </Grid>
+              <Border Style="{StaticResource SettingsDivider}" />
+              <Grid Style="{StaticResource SettingsRow}">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="134" /><ColumnDefinition Width="60" /></Grid.ColumnDefinitions>
+                <StackPanel VerticalAlignment="Center" Margin="0,3,8,3"><TextBlock Text="{DynamicResource Text.Opacity}" Style="{StaticResource SettingsRowTitle}" /><TextBlock Text="{DynamicResource Text.OpacityDescription}" Style="{StaticResource SettingsDescription}" /></StackPanel>
+                <Slider x:Name="OpacitySlider" Grid.Column="1" Style="{StaticResource SettingsSlider}" Minimum="40" Maximum="100" TickFrequency="1" SmallChange="1" LargeChange="10" IsSnapToTickEnabled="True"
+                        Value="{Binding OpacityPercent, Mode=TwoWay}" VerticalAlignment="Center" AutomationProperties.Name="{DynamicResource Text.Opacity}" />
+                <TextBlock x:Name="OpacityValue" Grid.Column="2" Text="{Binding OpacityPercent, StringFormat={}{0:0}%}" Style="{StaticResource SecondaryText}" FontSize="13" HorizontalAlignment="Right" VerticalAlignment="Center" />
+              </Grid>
+              <Border Style="{StaticResource SettingsDivider}" />
+              <Grid Style="{StaticResource SettingsRow}">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="134" /><ColumnDefinition Width="60" /></Grid.ColumnDefinitions>
+                <StackPanel VerticalAlignment="Center" Margin="0,3,8,3"><TextBlock Text="{DynamicResource Text.Size}" Style="{StaticResource SettingsRowTitle}" /><TextBlock Text="{DynamicResource Text.SizeDescription}" Style="{StaticResource SettingsDescription}" /></StackPanel>
+                <Slider x:Name="SizeSlider" Grid.Column="1" Style="{StaticResource SettingsSlider}" Minimum="75" Maximum="150" TickFrequency="5" SmallChange="5" LargeChange="10" IsSnapToTickEnabled="True"
+                        Value="{Binding BallSizePercent, Mode=TwoWay}" ToolTip="{Binding BallSizePercent, StringFormat={}{0}%}" VerticalAlignment="Center" AutomationProperties.Name="{DynamicResource Text.BallSize}" />
+                <TextBlock x:Name="SizeValue" Grid.Column="2" Text="{Binding BallSizeCaption}" ToolTip="{Binding BallSizePercent, StringFormat={}{0}%}" Style="{StaticResource BodyText}" FontSize="13" HorizontalAlignment="Right" VerticalAlignment="Center" />
+              </Grid>
+            </StackPanel>
+          </GroupBox>
+          <GroupBox Header="{DynamicResource Text.NotificationsRefresh}" Style="{StaticResource SettingsCard}" Margin="0,0,0,4">
+            <GroupBox.HeaderTemplate><DataTemplate><StackPanel Orientation="Horizontal" VerticalAlignment="Center"><Path Data="{StaticResource SettingsBellIcon}" Style="{StaticResource SettingsRowIcon}" Stroke="{DynamicResource AccentBrush}" /><TextBlock Text="{Binding}" VerticalAlignment="Center" /></StackPanel></DataTemplate></GroupBox.HeaderTemplate>
+            <StackPanel>
+              <Grid Style="{StaticResource SettingsRow}">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="26" /><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                <Path Data="{StaticResource SettingsBellIcon}" Style="{StaticResource SettingsRowIcon}" />
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,3,8,3">
+                  <TextBlock Text="{DynamicResource Text.Notifications}" Style="{StaticResource SettingsRowTitle}" />
+                  <TextBlock Text="{DynamicResource Text.NotificationsDescription}" Style="{StaticResource SettingsDescription}" />
+                </StackPanel>
+                <CheckBox x:Name="NotificationsToggle" Grid.Column="2" Style="{StaticResource SettingsToggle}" IsChecked="{Binding NotificationsEnabled, Mode=TwoWay}" AutomationProperties.Name="{DynamicResource Text.Notifications}" />
+              </Grid>
+              <Border Style="{StaticResource SettingsDivider}" />
+              <Grid Style="{StaticResource SettingsRow}">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="26" /><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,3,8,3"><TextBlock Text="{Binding LowQuotaThresholdCaption}" Style="{StaticResource SettingsRowTitle}" /><TextBlock Text="{DynamicResource Text.ThresholdDescription}" Style="{StaticResource SettingsDescription}" /></StackPanel>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" IsEnabled="{Binding NotificationsEnabled}" ToolTip="{DynamicResource Text.ThresholdTooltip}">
+                  <StackPanel.Style><Style TargetType="StackPanel"><Style.Triggers><Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.55" /></Trigger></Style.Triggers></Style></StackPanel.Style>
+                  <Grid Width="70" Height="30">
+                    <TextBox x:Name="ThresholdInput" Style="{StaticResource PanelTextBox}" FontSize="13" Padding="7,0,20,0" VerticalContentAlignment="Center" TextAlignment="Center" AutomationProperties.Name="{DynamicResource Text.ThresholdAccessible}">
+                      <TextBox.Text><Binding Path="LowQuotaThreshold" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"><Binding.ValidationRules><local:QuotaThresholdRule /></Binding.ValidationRules></Binding></TextBox.Text>
+                    </TextBox>
+                    <StackPanel HorizontalAlignment="Right" Width="18">
+                      <Button x:Name="ThresholdUp" Height="15" Padding="0" Style="{StaticResource CloseButton}" Width="18" Click="OnThresholdUp" AutomationProperties.Name="{DynamicResource Text.ThresholdUp}"><Path Data="{StaticResource StepUpIcon}" Fill="{DynamicResource TextSecondaryBrush}" Stretch="Uniform" Width="8" Height="4" IsHitTestVisible="False" /></Button>
+                      <Button x:Name="ThresholdDown" Height="15" Padding="0" Style="{StaticResource CloseButton}" Width="18" Click="OnThresholdDown" AutomationProperties.Name="{DynamicResource Text.ThresholdDown}"><Path Data="{StaticResource StepDownIcon}" Fill="{DynamicResource TextSecondaryBrush}" Stretch="Uniform" Width="8" Height="4" IsHitTestVisible="False" /></Button>
+                    </StackPanel>
+                  </Grid>
+                  <TextBlock Text="{DynamicResource Text.PercentAlert}" Style="{StaticResource SecondaryText}" FontSize="13" Margin="8,0,0,0" VerticalAlignment="Center" />
+                </StackPanel>
+              </Grid>
+              <Border Style="{StaticResource SettingsDivider}" />
+              <Grid Style="{StaticResource SettingsRow}">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="26" /><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                <Path Data="{StaticResource ClockIcon}" Style="{StaticResource SettingsRowIcon}" />
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,3,8,3">
+                  <TextBlock Text="{DynamicResource Text.RefreshInterval}" Style="{StaticResource SettingsRowTitle}" />
+                  <TextBlock Text="{DynamicResource Text.RefreshDescription}" Style="{StaticResource SettingsDescription}" />
+                </StackPanel>
+                <ComboBox x:Name="RefreshCombo" Grid.Column="2" Style="{StaticResource SettingsSelector}" ItemsSource="{Binding IntervalOptions}" SelectedItem="{Binding SelectedInterval, Mode=TwoWay}" AutomationProperties.Name="{DynamicResource Text.RefreshInterval}">
+                  <ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding Label}" /></DataTemplate></ComboBox.ItemTemplate>
+                </ComboBox>
+              </Grid>
+            </StackPanel>
+          </GroupBox>
+          <GroupBox x:Name="DetailsDisplayCard" Header="{DynamicResource Text.DetailsDisplay}" Style="{StaticResource SettingsCard}" AutomationProperties.Name="{DynamicResource Text.DetailsDisplay}">
+            <GroupBox.HeaderTemplate><DataTemplate><StackPanel Orientation="Horizontal" VerticalAlignment="Center"><Path Data="{StaticResource SettingsDocumentIcon}" Style="{StaticResource SettingsRowIcon}" Stroke="{DynamicResource AccentBrush}" /><TextBlock Text="{Binding}" VerticalAlignment="Center" /></StackPanel></DataTemplate></GroupBox.HeaderTemplate>
+            <StackPanel Margin="0,6,0,8" ToolTip="{DynamicResource Text.DetailsDisplayTooltip}">
+              <TextBlock Text="{DynamicResource Text.DetailsDisplayDescription}" Style="{StaticResource SettingsDescription}" Margin="0,0,0,6" />
+              <UniformGrid Columns="3" Height="28">
+                <CheckBox x:Name="ShowRemainingBox" Content="{DynamicResource Text.ShowRemaining}" Style="{StaticResource ReferenceCheckBox}" IsChecked="{Binding ShowRemaining, Mode=TwoWay}" VerticalAlignment="Center" />
+                <CheckBox x:Name="ShowResetBox" Content="{DynamicResource Text.ShowReset}" Style="{StaticResource ReferenceCheckBox}" IsChecked="{Binding ShowResetTime, Mode=TwoWay}" VerticalAlignment="Center" />
+                <CheckBox x:Name="ShowTodayBox" Content="{DynamicResource Text.ShowToday}" Style="{StaticResource ReferenceCheckBox}" IsChecked="{Binding ShowTodayUsage, Mode=TwoWay}" VerticalAlignment="Center" />
+              </UniformGrid>
+            </StackPanel>
+          </GroupBox>
+        </StackPanel>
+      </ScrollViewer>
+      <StackPanel Grid.Row="2" Margin="0,6,0,0">
+        <Grid Margin="0,0,0,4">
+          <Grid.Style>
+            <Style TargetType="Grid">
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding StatusMessage}" Value="">
+                  <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding StatusMessage}" Value="{x:Null}">
+                  <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </Grid.Style>
+          <Grid.ColumnDefinitions><ColumnDefinition Width="20" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+          <Path Data="{StaticResource InfoIcon}" Style="{StaticResource OutlineIcon}" Width="14" Height="14" HorizontalAlignment="Left" />
+          <TextBlock x:Name="SettingsStatus" Grid.Column="1" Text="{Binding StatusMessage}" Style="{StaticResource SecondaryText}" FontSize="11.5"
+                     TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" VerticalAlignment="Center" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" />
+        </Grid>
+        <Grid>
+          <Button x:Name="RestoreDefaultsButton" Style="{StaticResource SettingsSecondaryButton}" Content="{DynamicResource Text.RestoreDefaults}" Width="104" HorizontalAlignment="Left" Click="OnRestoreDefaults" />
+          <Button x:Name="SaveButton" Content="{DynamicResource Text.Save}" Width="98" HorizontalAlignment="Right" Click="OnSaveClick" AutomationProperties.Name="{DynamicResource Text.SaveSettings}">
+            <Button.Style><Style TargetType="Button" BasedOn="{StaticResource SettingsPrimaryButton}"><Style.Triggers><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding NotificationsEnabled}" Value="True" /><Condition Binding="{Binding ElementName=ThresholdInput, Path=(Validation.HasError)}" Value="True" /></MultiDataTrigger.Conditions><Setter Property="IsEnabled" Value="False" /></MultiDataTrigger></Style.Triggers></Style></Button.Style>
+          </Button>
+        </Grid>
+      </StackPanel>
+    </Grid>
+  </Border>
+</Window>
