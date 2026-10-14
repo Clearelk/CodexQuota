@@ -102,19 +102,6 @@ Organized into intuitive category cards. Supports instant UI language switching 
   <img alt="Settings · English" src="images/settings-en.png" width="380" />
 </p>
 
-<details>
-<summary>Click to expand: Screenshot checklist</summary>
-
-| File Name | Recommended Content |
-|---|---|
-| `images/floating-ball.png` | Close-up of the desktop floating ball showing the progress ring |
-| `images/main.png` | Quota details card interface (opened upon clicking the ball) |
-| `images/edge-docking.png` | Side-edge docked capsule state along screen border |
-| `images/settings-zh.png` | Settings window (Language set to "简体中文") |
-| `images/settings-en.png` | Settings window (Language set to "English") |
-
-</details>
-
 ---
 
 ## Quick Start
@@ -138,15 +125,9 @@ Organized into intuitive category cards. Supports instant UI language switching 
 
 #### Windows
 
-1. Download the latest installer or portable archive from [GitHub Releases](https://github.com/Clearelk/CodexQuota/releases):
-   - Setup Installer: `CodexQuota_v{version}_windows_x64-setup.exe`
-   - Portable Zip: `CodexQuota_v{version}_windows_x64.zip`
-2. Run the installer, or extract the zip package and double-click `CodexQuota.Desktop.exe`.
+1. Download the latest release archive `CodexQuota_v{version}_windows_x64.zip` from [GitHub Releases](https://github.com/Clearelk/CodexQuota/releases).
+2. Extract the package and double-click `CodexQuota.Desktop.exe` (Portable self-contained build, no extra .NET runtime required).
 3. The widget will automatically detect your local official Codex CLI and show up on your desktop!
-
-```
-CodexQuota_v{version}_windows_x64-setup.exe
-```
 
 > [!TIP]
 > The widget connects to your local official CLI environment automatically. It does not provide or require an account login form of its own.

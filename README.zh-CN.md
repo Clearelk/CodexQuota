@@ -100,19 +100,6 @@
   <img alt="Settings · English" src="images/settings-en.png" width="380" />
 </p>
 
-<details>
-<summary>点击展开：截图存放清单</summary>
-
-| 建议文件名 | 推荐截取内容 |
-|---|---|
-| `images/floating-ball.png` | 桌面上的悬浮球近景特写（进度环与百分比） |
-| `images/main.png` | 点击展开的额度详情主卡片界面 |
-| `images/edge-docking.png` | 悬浮球拖至屏幕左右边缘收缩为胶囊的侧边展示图 |
-| `images/settings-zh.png` | 设置窗口（语言为“简体中文”） |
-| `images/settings-en.png` | 设置窗口（语言切换为“English”） |
-
-</details>
-
 ---
 
 ## 快速开始
@@ -136,15 +123,9 @@
 
 #### Windows
 
-1. 从 [GitHub Releases](https://github.com/Clearelk/CodexQuota/releases) 下载最新版本的安装包或绿色包：
-   - 安装版：`CodexQuota_v{version}_windows_x64-setup.exe`
-   - 便携版：`CodexQuota_v{version}_windows_x64.zip`
-2. 双击安装程序，或解压后直接双击运行 `CodexQuota.Desktop.exe`。
+1. 从 [GitHub Releases](https://github.com/Clearelk/CodexQuota/releases) 下载最新版本的 `CodexQuota_v{version}_windows_x64.zip`。
+2. 解压后双击运行 `CodexQuota.Desktop.exe` 即可（免安装绿色自包含版本，无需预装 .NET 运行时环境）。
 3. 启动后，程序会自动探测本地官方客户端并完成初次刷新，悬浮球即刻出现在桌面角落！
-
-```
-CodexQuota_v{version}_windows_x64-setup.exe
-```
 
 > [!TIP]
 > 悬浮球首次启动会自动探测并连接官方环境。本应用**不提供且不需要**独立的账号密码登录表单，只要你的系统终端能正常使用 `codex` 命令，悬浮球即可自动读取。
