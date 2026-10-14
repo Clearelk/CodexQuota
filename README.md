@@ -86,7 +86,14 @@ Hover over the floating ball for ~300ms to pop out the details card, or click to
   <img alt="CodexQuota Quota Details Interface" src="images/main.png" width="450" />
 </p>
 
-### 3. Settings Panel (Bilingual Interface)
+### 3. Edge Docking (Side Capsule Mode)
+When dragged off the left or right edge of the screen by about 1/4 of its diameter, the ball smoothly collapses into an edge-docked quota capsule. Hovering expands it back to full size.
+
+<p align="center">
+  <img alt="CodexQuota Edge Docking Capsule Mode" src="images/edge-docking.png" width="450" />
+</p>
+
+### 4. Settings Panel (Bilingual Interface)
 Organized into intuitive category cards. Supports instant UI language switching (English / 简体中文), scale, opacity, alert thresholds, and corner docking presets.
 
 <p align="center">
@@ -96,12 +103,13 @@ Organized into intuitive category cards. Supports instant UI language switching 
 </p>
 
 <details>
-<summary>Click to expand: Screenshot checklist (Only 4 images needed)</summary>
+<summary>Click to expand: Screenshot checklist</summary>
 
 | File Name | Recommended Content |
 |---|---|
 | `images/floating-ball.png` | Close-up of the desktop floating ball showing the progress ring |
 | `images/main.png` | Quota details card interface (opened upon clicking the ball) |
+| `images/edge-docking.png` | Side-edge docked capsule state along screen border |
 | `images/settings-zh.png` | Settings window (Language set to "简体中文") |
 | `images/settings-en.png` | Settings window (Language set to "English") |
 

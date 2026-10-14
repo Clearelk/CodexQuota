@@ -84,7 +84,14 @@
   <img alt="CodexQuota 额度详情主界面" src="images/main.png" width="450" />
 </p>
 
-### 3. 设置面板（中英双语界面）
+### 3. 贴边收起（侧边胶囊形态）
+当悬浮球被拖动到屏幕最左侧或最右侧并移出约 1/4 时，松手会自动收缩为精巧的侧边“额度胶囊”。胶囊内部以液位条显示剩余比例；鼠标悬停即刻平滑展开，拖回屏幕内部恢复球体。
+
+<p align="center">
+  <img alt="CodexQuota 侧边贴边胶囊形态" src="images/edge-docking.png" width="450" />
+</p>
+
+### 4. 设置面板（中英双语界面）
 提供直观的分组卡片设置面板。支持界面语言即时切换（简体中文 / English），并可自由调节悬浮球尺寸、透明度、阈值预警及快速停靠预设。
 
 <p align="center">
@@ -94,12 +101,13 @@
 </p>
 
 <details>
-<summary>点击展开：截图存放清单（仅需 4 张）</summary>
+<summary>点击展开：截图存放清单</summary>
 
 | 建议文件名 | 推荐截取内容 |
 |---|---|
 | `images/floating-ball.png` | 桌面上的悬浮球近景特写（进度环与百分比） |
 | `images/main.png` | 点击展开的额度详情主卡片界面 |
+| `images/edge-docking.png` | 悬浮球拖至屏幕左右边缘收缩为胶囊的侧边展示图 |
 | `images/settings-zh.png` | 设置窗口（语言为“简体中文”） |
 | `images/settings-en.png` | 设置窗口（语言切换为“English”） |
 
