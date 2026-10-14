@@ -1,12 +1,12 @@
 <div align="center">
 
-# CodexQuota · Codex 额度悬浮球
+# CodexQuota · Codex 额度查看与剩余额度监控悬浮球 (Desktop Quota Tracker)
 
 <p align="center">
-  <strong>Keep your remaining Codex quota resident at a glance on your Windows desktop.</strong>
+  <strong>An always-on Windows desktop floating ball widget & quota tracker for monitoring OpenAI Codex & ChatGPT remaining subscription rate limits.</strong>
 </p>
 <p align="center">
-  <em>让 Codex 剩余额度，常驻桌面的一角。</em>
+  <em>Codex 额度查看 · 额度监控 · Codex Quota Tracker · Rate Limit Monitor · Desktop Floating Widget · Multi-AI Quota Viewer</em>
 </p>
 
 [![Release](https://img.shields.io/github/v/release/Clearelk/CodexQuota?color=0078D4&label=Release)](https://github.com/Clearelk/CodexQuota/releases)
@@ -30,9 +30,9 @@
 
 ## Introduction
 
-**CodexQuota** is a lightweight, non-intrusive Windows desktop floating ball widget designed for OpenAI Codex users.
+**CodexQuota** is a lightweight, non-intrusive Windows desktop floating ball widget & quota tracker designed for OpenAI Codex users.
 
-When writing code or collaborating with AI programming assistants, you no longer need to switch tabs or run command-line queries to check your remaining quota. CodexQuota connects directly to your locally authenticated official Codex CLI via its local JSON-RPC interface (`codex app-server`), safely fetching your 5-hour and 7-day subscription quotas in read-only mode and displaying real-time percentages in a clean desktop widget.
+When writing code or collaborating with AI programming assistants, you no longer need to switch tabs or run command-line queries to check your remaining quota. CodexQuota connects directly to your locally authenticated official Codex CLI via its local JSON-RPC interface (`codex app-server`), safely fetching your **5-hour and 7-day subscription quotas** in read-only mode and displaying real-time percentages in a clean desktop widget.
 
 - ⚡ **Always-on Desktop Floating Ball**: Circular progress ring with 3 battery-level color tiers (Green / Yellow / Red).
 - 🔍 **Hover for Instant Details**: Popout card displays 5-hour and 7-day primary quotas, precise second-level reset countdowns, and daily local session metrics.
@@ -56,7 +56,7 @@ When writing code or collaborating with AI programming assistants, you no longer
   - [Installation & Running](#installation--running)
 - [Usage Guide](#usage-guide)
 - [Settings](#settings)
-- [Quota Mechanism & Privacy](#quota-mechanism--privacy)
+- [Roadmap](#roadmap)
 - [Troubleshooting & FAQ](#troubleshooting--faq)
 - [Build from Source](#build-from-source)
 - [Project Structure](#project-structure)
@@ -175,21 +175,11 @@ Click the ⚙️ gear icon in the details panel or select **Settings** from the 
 
 ---
 
-## Quota Mechanism & Privacy
+## Roadmap
 
-### 1. Genuine 5-Hour & 7-Day Quotas
-- The floating ball reflects the official primary 5-hour quota window.
-- The details panel shows both 5-hour and 7-day quotas alongside exact local reset times.
-- Expired data displays neutral `--` markers rather than falsely assuming 100% availability.
-
-### 2. Local Session Statistics (Unofficial)
-- Daily session counts are parsed locally from session records under `CODEX_HOME` (sessions with today's activity).
-- Estimated quota consumption tracks delta usage between observed snapshots during the application's runtime.
-
-### 3. Security & Privacy Guarantees
-- **Pure Local IPC**: Communicates with the local `codex app-server` process via standard stdio pipes; data remains exclusively in local RAM.
-- **No Token Harvesting**: Never accesses, copies, or logs `auth.json` or session tokens.
-- **Read-Only Whitelist**: Calls only `initialize`, `account/read`, and `account/rateLimits/read`. Never sends user prompts, code snippets, or inference requests.
+- 🚀 **Multi-AI Provider Compatibility**: Planned support for monitoring subscription quotas and API balances across Claude, Gemini, DeepSeek, Grok, and other mainstream AI providers, building a unified desktop AI quota hub.
+- 📈 **Usage History & Analytics**: Periodic usage charts, token trend tracking, and historical consumption statistics.
+- 🔔 **Expanded Alerts**: Support for Webhooks and custom notification channels for low quota alerts.
 
 ---
 
