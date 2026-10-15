@@ -3,10 +3,38 @@ using CodexQuota.Core.Services;
 
 namespace CodexQuota.Desktop.ViewModels;
 
-/// <summary>A stable theme choice with a localized label.</summary>
-public sealed record ThemeOption(ThemeMode Mode, string Label);
-public sealed record PlacementOption(BallPlacement Placement, string Label);
-public sealed record IntervalOption(int Seconds, string Label);
+/// <summary>Updates option text independently of the stable selected item.</summary>
+public abstract class SettingsOption(string label) : ObservableObject
+{
+    private string _label = label;
+
+    public string Label
+    {
+        get => _label;
+        internal set
+        {
+            if (_label == value) { return; }
+            _label = value;
+            Raise();
+        }
+    }
+}
+
+public sealed class ThemeOption(ThemeMode mode, string label) : SettingsOption(label)
+{
+    public ThemeMode Mode { get; } = mode;
+}
+
+public sealed class PlacementOption(BallPlacement placement, string label) : SettingsOption(label)
+{
+    public BallPlacement Placement { get; } = placement;
+}
+
+public sealed class IntervalOption(int seconds, string label) : SettingsOption(label)
+{
+    public int Seconds { get; } = seconds;
+}
+
 public sealed record LanguageOption(AppLanguage Language, string Label);
 
 /// <summary>
@@ -56,20 +84,47 @@ public sealed class SettingsViewModel : ObservableObject
     private int _ballSizePercent = 100;
     private int _lowQuotaThreshold = 20;
     private bool _showRemaining = true, _showResetTime = true, _showTodayUsage = true, _notificationsEnabled;
-    private PlacementOption _selectedPlacement = new(BallPlacement.Custom, string.Empty);
+    private PlacementOption _selectedPlacement;
     private BallDockSide _dockSide = BallDockSide.None;
+    private readonly IReadOnlyList<IntervalOption> _presetIntervalOptions =
+        [new(30, string.Empty), new(60, string.Empty), new(120, string.Empty), new(300, string.Empty), new(600, string.Empty), new(900, string.Empty)];
+    private IReadOnlyList<IntervalOption> _intervalOptions;
 
-    public IReadOnlyList<PlacementOption> PlacementOptions { get; private set; } = [];
+    public IReadOnlyList<PlacementOption> PlacementOptions { get; } =
+        [new(BallPlacement.Custom, string.Empty), new(BallPlacement.TopLeft, string.Empty), new(BallPlacement.TopRight, string.Empty),
+            new(BallPlacement.BottomLeft, string.Empty), new(BallPlacement.BottomRight, string.Empty)];
 
-    public IReadOnlyList<IntervalOption> IntervalOptions => new[] { 30, 60, 120, 300, 600, 900 }
-        .Select(seconds => new IntervalOption(seconds, seconds == 120
-            ? Text("IntervalRecommended", DescribeInterval(seconds)) : DescribeInterval(seconds)))
-        .Concat(_intervalSeconds is 30 or 60 or 120 or 300 or 600 or 900 ? []
-            : new[] { new IntervalOption(_intervalSeconds, Text("IntervalCurrent", DescribeInterval(_intervalSeconds))) }).ToArray();
+    public IReadOnlyList<IntervalOption> IntervalOptions => _intervalOptions;
 
     private string DescribeInterval(int seconds) => seconds % 60 == 0
         ? Text("IntervalMinutes", seconds / 60)
         : Text("IntervalSeconds", seconds);
+
+    private void RelabelIntervalOptions()
+    {
+        foreach (IntervalOption option in IntervalOptions)
+        {
+            string description = DescribeInterval(option.Seconds);
+            option.Label = option.Seconds == WidgetSettings.DefaultIntervalSeconds
+                ? Text("IntervalRecommended", description)
+                : _presetIntervalOptions.Any(preset => preset.Seconds == option.Seconds)
+                    ? description : Text("IntervalCurrent", description);
+        }
+    }
+
+    private void UpdateIntervalOptions()
+    {
+        if (_presetIntervalOptions.Any(option => option.Seconds == _intervalSeconds))
+        {
+            _intervalOptions = _presetIntervalOptions;
+        }
+        else if (!_intervalOptions.Any(option => option.Seconds == _intervalSeconds))
+        {
+            _intervalOptions = [.. _presetIntervalOptions, new IntervalOption(_intervalSeconds, string.Empty)];
+        }
+
+        RelabelIntervalOptions();
+    }
 
     public IntervalOption SelectedInterval
     {
@@ -77,7 +132,18 @@ public sealed class SettingsViewModel : ObservableObject
         set { if (value is not null && value.Seconds != _intervalSeconds) { IntervalSeconds = value.Seconds; } }
     }
 
-    public PlacementOption SelectedPlacement { get => _selectedPlacement; set { if (value is not null) { _selectedPlacement = value; Raise(); } } }
+    public PlacementOption SelectedPlacement
+    {
+        get => _selectedPlacement;
+        set
+        {
+            if (value is null) { return; }
+            PlacementOption option = PlacementOptions.Single(candidate => candidate.Placement == value.Placement);
+            if (ReferenceEquals(option, _selectedPlacement)) { return; }
+            _selectedPlacement = option;
+            Raise();
+        }
+    }
     public int BallSizePercent { get => _ballSizePercent; set { _ballSizePercent = Math.Clamp(value, 75, 150); Raise(); Raise(nameof(BallSizeCaption)); } }
     public int LowQuotaThreshold { get => _lowQuotaThreshold; set { _lowQuotaThreshold = Math.Clamp(value, 1, 100); Raise(); Raise(nameof(LowQuotaThresholdCaption)); } }
     public string BallSizeCaption => Text(BallSizePercent < 100 ? "SizeSmall" : BallSizePercent > 120 ? "SizeLarge" : "SizeMedium");
@@ -91,25 +157,23 @@ public sealed class SettingsViewModel : ObservableObject
     {
         _startup = startup;
         _store = store;
-        _selectedTheme = new ThemeOption(ThemeMode.System, string.Empty);
+        _selectedTheme = ThemeOptions[0];
+        _selectedPlacement = PlacementOptions[0];
+        _intervalOptions = _presetIntervalOptions;
         ApplyLanguage(AppLanguage.SimplifiedChinese);
     }
 
-    public IReadOnlyList<ThemeOption> ThemeOptions { get; private set; } = [];
+    public IReadOnlyList<ThemeOption> ThemeOptions { get; } =
+        [new(ThemeMode.System, string.Empty), new(ThemeMode.Light, string.Empty), new(ThemeMode.Dark, string.Empty)];
 
     /// <summary>Relabels committed presentation without changing selections, newer drafts or invalid input text.</summary>
     public void ApplyLanguage(AppLanguage language)
     {
         _language = language;
-        ThemeMode theme = _selectedTheme.Mode;
-        BallPlacement placement = _selectedPlacement.Placement;
-        ThemeOptions = [new(ThemeMode.System, Text("ThemeSystem")), new(ThemeMode.Light, Text("ThemeLight")), new(ThemeMode.Dark, Text("ThemeDark"))];
-        PlacementOptions = [new(BallPlacement.Custom, Text("PositionCustom")), new(BallPlacement.TopLeft, Text("PositionTopLeft")),
-            new(BallPlacement.TopRight, Text("PositionTopRight")), new(BallPlacement.BottomLeft, Text("PositionBottomLeft")), new(BallPlacement.BottomRight, Text("PositionBottomRight"))];
-        _selectedTheme = ThemeOptions.Single(option => option.Mode == theme);
-        _selectedPlacement = PlacementOptions.Single(option => option.Placement == placement);
-        foreach (string property in new[] { nameof(ThemeOptions), nameof(SelectedTheme), nameof(PlacementOptions), nameof(SelectedPlacement),
-            nameof(IntervalOptions), nameof(SelectedInterval), nameof(BallSizeCaption), nameof(LowQuotaThresholdCaption),
+        foreach (ThemeOption option in ThemeOptions) { option.Label = Text("Theme" + option.Mode); }
+        foreach (PlacementOption option in PlacementOptions) { option.Label = Text("Position" + option.Placement); }
+        RelabelIntervalOptions();
+        foreach (string property in new[] { nameof(BallSizeCaption), nameof(LowQuotaThresholdCaption),
             nameof(StartupStatusText), nameof(StatusMessage), nameof(CliStatusText), nameof(SettingsPathText) }) { Raise(property); }
     }
 
@@ -139,6 +203,7 @@ public sealed class SettingsViewModel : ObservableObject
             }
 
             _intervalSeconds = value;
+            UpdateIntervalOptions();
             Raise();
             Raise(nameof(IntervalOptions));
             Raise(nameof(SelectedInterval));
@@ -150,12 +215,10 @@ public sealed class SettingsViewModel : ObservableObject
         get => _selectedTheme;
         set
         {
-            if (value is null || ReferenceEquals(value, _selectedTheme))
-            {
-                return;
-            }
-
-            _selectedTheme = value;
+            if (value is null) { return; }
+            ThemeOption option = ThemeOptions.Single(candidate => candidate.Mode == value.Mode);
+            if (ReferenceEquals(option, _selectedTheme)) { return; }
+            _selectedTheme = option;
             Raise();
         }
     }
@@ -294,6 +357,7 @@ public sealed class SettingsViewModel : ObservableObject
 
         _opacityPercent = Math.Round(settings.Opacity * 100);
         _intervalSeconds = settings.RefreshIntervalSeconds;
+        UpdateIntervalOptions();
         _codexCliPath = settings.CodexCliPath ?? string.Empty;
         _selectedTheme = ThemeOptions.FirstOrDefault(option => option.Mode == settings.Theme) ?? ThemeOptions[0];
         _selectedPlacement = PlacementOptions.First(option => option.Placement == settings.Placement);
@@ -314,12 +378,12 @@ public sealed class SettingsViewModel : ObservableObject
     }
 
     /// <summary>
-    /// Resets every draft to the defaults — including the startup intent — without any
-    /// registry operation. The submitted Save applies the whole draft.
+    /// Resets drafts, including startup intent, while keeping the current ball position.
+    /// No registry operation occurs until the submitted Save applies the whole draft.
     /// </summary>
     public void RestoreDefaults()
     {
-        LoadDraftValues(WidgetSettings.Default with { Placement = BallPlacement.BottomRight });
+        LoadDraftValues(WidgetSettings.Default with { BallLeft = PositionLeft, BallTop = PositionTop });
         _startAtLogin = false;
         _startupPending = _startupVerified is null || _startupVerified != false;
         SetStatusMessage(new AppMessage("DefaultsDrafted"));

@@ -1195,7 +1195,7 @@ internal sealed class VerificationHarness
         ((System.Windows.Controls.Button)settingsWindow.FindName("RestoreDefaultsButton")).RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));
         _widget.UpdateSettings(_settings.ToSettings());
         await FlushResourceChangesAsync(details, settingsWindow);
-        Check("restore_defaults_updates_controls_and_keeps_ball_value", true, _settings.BallSizePercent == 100 && _settings.OpacityPercent == 95 && _settings.IntervalSeconds == 120 && _settings.SelectedPlacement.Placement == BallPlacement.BottomRight && _settings.ShowRemaining && _settings.ShowResetTime && _settings.ShowTodayUsage && !_settings.NotificationsEnabled && _settings.LowQuotaThreshold == 20 && _widget.BallText == ballText);
+        Check("restore_defaults_updates_controls_and_keeps_ball_value", true, _settings.BallSizePercent == 100 && _settings.OpacityPercent == 95 && _settings.IntervalSeconds == 120 && _settings.SelectedPlacement.Placement == BallPlacement.Custom && _settings.ShowRemaining && _settings.ShowResetTime && _settings.ShowTodayUsage && !_settings.NotificationsEnabled && _settings.LowQuotaThreshold == 20 && _widget.BallText == ballText);
         // Keep the main reference render free of the action status line.
         _settings.LoadFrom(WidgetSettings.Default, _executablePath, "已找到官方 Codex 客户端（验证）");
         _widget.UpdateSettings(WidgetSettings.Default);
